@@ -33,6 +33,7 @@ class CommentController extends Controller
         $comments = Comment::query()
             ->with('replies')
             ->where('parent_id', 0)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return new JsonResponse(['list' => $comments]);
@@ -50,5 +51,17 @@ class CommentController extends Controller
         Comment::query()->create($input);
 
         return new JsonResponse(['message' => 'Comment was added successfully']);
+    }
+
+    /**
+     * @param \App\Models\Comment $comment
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(Comment $comment): JsonResponse
+    {
+        $comment->delete();
+
+        return new JsonResponse(['message' => 'Comment was deleted successfully']);
     }
 }

@@ -2,10 +2,7 @@
 
 @section('content')
     <div class="row">
-        <h2> Comments List </h2>
-    </div>
-    <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-10 mx-auto">
             <comments-list></comments-list>
         </div>
     </div>

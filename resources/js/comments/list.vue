@@ -1,13 +1,14 @@
 <template>
-    <div class="card">
-        <div class="card-body">
-            <div class="col-12">
-                <comment-form :parent="0"></comment-form>
-            </div>
-            <div class="col-12">
-                <tree-view :treeData="comments"></tree-view>
+    <div class="tree-content">
+        <div class="sticky-top">
+            <div class="card">
+                <div class="card-body">
+                    <h1>Leave your comment</h1>
+                    <comment-form :parent="0"></comment-form>
+                </div>
             </div>
         </div>
+       <tree-view :treeData="comments"></tree-view>
     </div>
 </template>
 
@@ -30,6 +31,9 @@ export default {
     },
     mounted() {
         this.$root.$on("add-comment", () => {
+            this.getResults();
+        })
+        this.$root.$on("delete-comment", () => {
             this.getResults();
         })
     },

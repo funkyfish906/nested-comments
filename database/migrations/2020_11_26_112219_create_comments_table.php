@@ -23,6 +23,11 @@ class CreateCommentsTable extends Migration
             $table->unsignedBigInteger('parent_id');
             $table->text('comment');
             $table->timestamps();
+
+            $table->foreign('parent_id')
+                ->references('id')
+                ->on('comments')
+                ->onDelete('cascade');
         });
     }
 

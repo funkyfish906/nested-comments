@@ -1991,6 +1991,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2010,6 +2011,9 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     this.$root.$on("add-comment", function () {
+      _this.getResults();
+    });
+    this.$root.$on("delete-comment", function () {
       _this.getResults();
     });
   },
@@ -2057,11 +2061,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      isHidden: true
+      isHidden: true,
+      errors: null
     };
   },
   name: "node",
@@ -2074,6 +2085,16 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     showForm: function showForm() {
       this.isHidden = !this.isHidden;
+    },
+    deleteItem: function deleteItem(id) {
+      var _this = this;
+
+      axios["delete"]("/comments/" + id).then(function (response) {
+        _this.$root.$emit("delete-comment");
+      })["catch"](function (_ref) {
+        var errors = _ref.response.data.errors;
+        _this.errors = errors;
+      });
     }
   }
 });
@@ -19861,23 +19882,29 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "card" }, [
-    _c("div", { staticClass: "card-body" }, [
-      _c(
-        "div",
-        { staticClass: "col-12" },
-        [_c("comment-form", { attrs: { parent: 0 } })],
-        1
-      ),
+  return _c(
+    "div",
+    { staticClass: "tree-content" },
+    [
+      _c("div", { staticClass: "sticky-top" }, [
+        _c("div", { staticClass: "card" }, [
+          _c(
+            "div",
+            { staticClass: "card-body" },
+            [
+              _c("h1", [_vm._v("Leave your comment")]),
+              _vm._v(" "),
+              _c("comment-form", { attrs: { parent: 0 } })
+            ],
+            1
+          )
+        ])
+      ]),
       _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "col-12" },
-        [_c("tree-view", { attrs: { treeData: _vm.comments } })],
-        1
-      )
-    ])
-  ])
+      _c("tree-view", { attrs: { treeData: _vm.comments } })
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -19901,34 +19928,57 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "li",
-    { staticClass: "list-item" },
-    [
-      _c("p", [_vm._v(_vm._s(_vm.node.comment))]),
-      _vm._v(" "),
-      _c("a", { attrs: { href: "#" }, on: { click: _vm.showForm } }, [
-        _vm._v("Leave comment")
-      ]),
-      _vm._v(" "),
-      _c("comment-form", {
-        class: { "d-none": _vm.isHidden },
-        attrs: { parent: _vm.node.id }
-      }),
-      _vm._v(" "),
-      _vm.node.replies
-        ? _c(
-            "ul",
-            { staticClass: "tree-list" },
-            _vm._l(_vm.node.replies, function(child) {
-              return _c("node", { key: child.id, attrs: { node: child } })
-            }),
-            1
-          )
-        : _vm._e()
-    ],
-    1
-  )
+  return _c("li", { staticClass: "list-item" }, [
+    _c(
+      "div",
+      { staticClass: "border-bottom" },
+      [
+        _c("p", { staticClass: "font-weight-bold" }, [
+          _vm._v(_vm._s(_vm.node.comment))
+        ]),
+        _vm._v(" "),
+        _c("p", [
+          _vm._v(_vm._s(new Date(_vm.node.created_at).toLocaleDateString()))
+        ]),
+        _vm._v(" "),
+        _c(
+          "a",
+          {
+            attrs: { href: "#" },
+            on: {
+              click: function($event) {
+                return _vm.deleteItem(_vm.node.id)
+              }
+            }
+          },
+          [_vm._v("delete")]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "text-right" }, [
+          _c("a", { attrs: { href: "#" }, on: { click: _vm.showForm } }, [
+            _vm._v("Reply")
+          ])
+        ]),
+        _vm._v(" "),
+        _c("comment-form", {
+          class: { "d-none": _vm.isHidden },
+          attrs: { parent: _vm.node.id }
+        })
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _vm.node.replies
+      ? _c(
+          "ul",
+          { staticClass: "tree-list" },
+          _vm._l(_vm.node.replies, function(child) {
+            return _c("node", { key: child.id, attrs: { node: child } })
+          }),
+          1
+        )
+      : _vm._e()
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
