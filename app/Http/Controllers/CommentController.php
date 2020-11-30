@@ -31,7 +31,9 @@ class CommentController extends Controller
     public function list(): JsonResponse
     {
         $comments = Comment::query()
-            ->with('replies')
+            ->with('replies', function($query){
+                $query->orderBy('created_at', 'desc');
+            })
             ->where('parent_id', 0)
             ->orderBy('created_at', 'desc')
             ->get();
